@@ -1,0 +1,82 @@
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://test:test@localhost:8010/eureka
+ribbon:
+    ReadTimeout: 60000
+server:
+    port: 8082
+spring:
+    application:
+        name: v2microgateway
+    cloud:
+        gateway:
+            discovery:
+                locator:
+                    enabled: true
+                    lower-case-service-id: true
+            routes:
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                - AuthorizationHeaderFilter
+                id: users-status-check
+                predicates:
+                - Path=/users-ws/users/status/check
+                - Method=GET
+                - Header=Authorization, Bearer (.*)
+                uri: lb://users-ws
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                id: users-ws
+                predicates:
+                - Path=/users-ws/users
+                - Method=POST
+                uri: lb://users-ws
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                id: users-ws-login
+                predicates:
+                - Path=/users-ws/users/login
+                - Method=POST
+                uri: lb://users-ws
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - AuthorizationHeaderFilter=ROLE_ADMIN
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                id: users-ws-get-update-delete
+                predicates:
+                - Path=/users-ws/users/**
+                - Method=GET,PUT
+                - Header=Authorization, Bearer (.*)
+                uri: lb://users-ws
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                id: users-ws-h2-console
+                predicates:
+                - Path=/users-ws/h2-console
+                - Method=GET
+                uri: lb://users-ws
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                id: users-ws-actuator
+                predicates:
+                - Path=/users-ws/actuator/**
+                - Method=GET
+                uri: lb://users-ws
+            -   filters:
+                - RemoveRequestHeader=Cookie
+                - AuthorizationHeaderFilter=ROLE_ADMIN DELETE
+                - RewritePath=/users-ws/(?<segment>.*), /${segment}
+                id: users-ws-delete
+                predicates:
+                - Path=/users-ws/users/**
+                - Method=DELETE
+                - Header=Authorization, Bearer (.*)
+                uri: lb://users-ws         
+token:
+    secret: hfgry463hf746hf573ydh475fhy5739hfgry463hf746hf573ydh475fhy5739hfgry463hf746hf573ydh475fhy5739
