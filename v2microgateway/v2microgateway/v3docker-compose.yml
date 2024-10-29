@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+
+  user-ws:
+    image: venkateshkrish/vtwousermulti:0.0.1-SNAPSHOT
+    container_name: users-ws
+    networks:
+      - micrv2network
+    depends_on:
+      - naming-server
+    environment:
+      GATEWAY.IP: "172.18.0.4"
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://test:test@naming-server:8010/eureka  
+    
+
+  api-gateway:
+    image: venkateshkrish/v2gt-v2gateway:0.0.1-SNAPSHOT
+    ports:
+      - "8082:8082"
+    networks:
+      - micrv2network
+    depends_on:
+      - naming-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://test:test@naming-server:8010/eureka  
+
+  naming-server:
+    image: venkateshkrish/v2dis-v2discoverservice:0.0.1-SNAPSHOT
+    container_name: naming-server
+    ports:
+      - "8010:8010"
+    networks:
+      - micrv2network
+
+  awsome-app:
+    image: venkateshkrish/awesone-app:nginx
+    container_name: awesome-app
+    ports:
+      - "8082:80"
+   
+
+      
+
+networks:
+  micrv2network:
