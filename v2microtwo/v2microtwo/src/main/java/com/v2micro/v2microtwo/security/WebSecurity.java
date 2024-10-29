@@ -18,7 +18,8 @@ import com.v2micro.v2microtwo.service.UsersService;
 
 
 
-@EnableMethodSecurity(prePostEnabled=true)
+
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
@@ -35,7 +36,7 @@ public class WebSecurity {
     
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    	
+    	System.out.println(environment.getProperty("gateway.ip"));
     	// Configure AuthenticationManagerBuilder
     	AuthenticationManagerBuilder authenticationManagerBuilder = 
     			http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -51,7 +52,7 @@ public class WebSecurity {
     	authenticationFilter.setFilterProcessesUrl(environment.getProperty("login.url.path"));
     	
         http.csrf((csrf) -> csrf.disable());
-  
+  //'"+environment.getProperty("gateway.ip")+"'
         http.authorizeHttpRequests((authz) -> authz
         .requestMatchers(new AntPathRequestMatcher("/users/**"))
         .access(

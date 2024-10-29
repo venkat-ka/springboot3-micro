@@ -10,9 +10,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import org.slf4j.LoggerFactory;
 
 import com.v2microthree.V2MicroJwtAuthorities.JwtClaimsParser;
+
+import org.slf4j.LoggerFactory;
 
 import io.jsonwebtoken.lang.Arrays;
 import jakarta.servlet.FilterChain;
